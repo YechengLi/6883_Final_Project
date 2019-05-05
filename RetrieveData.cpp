@@ -12,7 +12,7 @@
 #include "RetrieveData.hpp"
 using namespace std;
 
-void ReadCsv(string filename, map<string, Stock>& tickerMap)
+void ReadCsv(string filename,vector<string>& tickerList, map<string, Stock>& tickerMap)
 {
 	ifstream fin(filename);
 	string line, ticker, StartDate, EndDate;
@@ -22,6 +22,7 @@ void ReadCsv(string filename, map<string, Stock>& tickerMap)
 		getline(sin, ticker, ',');
 		getline(sin, StartDate, ',');
 		getline(sin, EndDate, ',');
+		tickerList.push_back(ticker);
 		tickerMap[ticker] = Stock(StartDate, EndDate);
 	}
 }
@@ -84,10 +85,6 @@ string getTimeinSeconds(string Time)
 // retrieve the 121-day prices for one group
 int RetrieveFromYahoo(map<string, Stock>& tickerMap)
 {
-	//symbolList.push_back(string("AMZN"));
-	//symbolList.push_back(string("MSFT"));
-	//symbolList.push_back(string("TWTR"));
-	//vector<string>::iterator itr = symbolList.begin();
 	map<string, Stock>::iterator itr = tickerMap.begin();
 	struct MemoryStruct data;
 	data.memory = NULL;
@@ -95,10 +92,6 @@ int RetrieveFromYahoo(map<string, Stock>& tickerMap)
 
 	// file pointer to create file that store the data  
 	FILE *fp;
-
-	//// name of files  
-	/*const char outfilename[FILENAME_MAX] = "Output.txt";*/
-	//const char resultfilename[FILENAME_MAX] = "Results.txt";
 
 	// declaration of an object CURL 
 	CURL *handle;
@@ -124,19 +117,6 @@ int RetrieveFromYahoo(map<string, Stock>& tickerMap)
 			curl_easy_setopt(handle, CURLOPT_SSL_VERIFYHOST, 0);
 			curl_easy_setopt(handle, CURLOPT_COOKIEJAR, "cookies.txt");
 			curl_easy_setopt(handle, CURLOPT_COOKIEFILE, "cookies.txt");
-
-			//curl_easy_setopt(handle, CURLOPT_ENCODING, "");
-			//curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_data);
-			//curl_easy_setopt(handle, CURLOPT_WRITEDATA, fp);
-			//result = curl_easy_perform(handle);
-			//fclose(fp);
-
-			//if (result != CURLE_OK)
-			//{
-			//	 if errors have occurred, tell us what is wrong with result
-			//	fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(result));
-			//	return 1;
-			//}
 
 			curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_data2);
 			curl_easy_setopt(handle, CURLOPT_WRITEDATA, (void *)&data);
@@ -195,19 +175,7 @@ int RetrieveFromYahoo(map<string, Stock>& tickerMap)
 			const char * cookies = sCookies.c_str();
 			curl_easy_setopt(handle, CURLOPT_COOKIE, cookies);   // Only needed for 1st stock
 			curl_easy_setopt(handle, CURLOPT_URL, cURL);
-			//fp = fopen(resultfilename, "ab");
-			//curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_data);
-			//curl_easy_setopt(handle, CURLOPT_WRITEDATA, fp);
-			//result = curl_easy_perform(handle);
-			//fclose(fp);
 
-			// Check for errors */
-			//if (result != CURLE_OK)
-			//{
-			//	// if errors have occurred, tell us what is wrong with 'result'
-			//	fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(result));
-			//	return 1;
-			//}
 			curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_data2);
 			curl_easy_setopt(handle, CURLOPT_WRITEDATA, (void *)&data);
 			result = curl_easy_perform(handle);
@@ -218,14 +186,6 @@ int RetrieveFromYahoo(map<string, Stock>& tickerMap)
 				fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(result));
 				return 1;
 			}
-
-			//stringstream sData;
-			//sData.str(data.memory);
-			//string line;
-			//getline(sData, line);
-			//cout << line << endl;
-			//for (; getline(sData, line); )
-			//	cout << line << endl;
 
 			stringstream sData;
 			sData.str(data.memory);
@@ -263,21 +223,12 @@ int RetrieveFromYahoo(map<string, Stock>& tickerMap)
 
 int RetrieveSPY(map<string, double>& SPYPriceList)
 {
-	//symbolList.push_back(string("AMZN"));
-	//symbolList.push_back(string("MSFT"));
-	//symbolList.push_back(string("TWTR"));
-	//vector<string>::iterator itr = symbolList.begin();
-	//map<string, Stock>::iterator itr = tickerMap.begin();
 	struct MemoryStruct data;
 	data.memory = NULL;
 	data.size = 0;
 
 	// file pointer to create file that store the data  
 	FILE *fp;
-
-	//// name of files  
-	/*const char outfilename[FILENAME_MAX] = "Output.txt";*/
-	//const char resultfilename[FILENAME_MAX] = "Results.txt";
 
 	// declaration of an object CURL 
 	CURL *handle;
@@ -296,26 +247,12 @@ int RetrieveSPY(map<string, double>& SPYPriceList)
 		string sCookies, sCrumb;
 		if (sCookies.length() == 0 || sCrumb.length() == 0)
 		{
-			/*fp = fopen(outfilename, "w");*/
 			//curl_easy_setopt(handle, CURLOPT_URL, "https://finance.yahoo.com/quote/AMZN/history?p=AMZN");
 			curl_easy_setopt(handle, CURLOPT_URL, "https://finance.yahoo.com/quote/AMZN/history");
 			curl_easy_setopt(handle, CURLOPT_SSL_VERIFYPEER, 0);
 			curl_easy_setopt(handle, CURLOPT_SSL_VERIFYHOST, 0);
 			curl_easy_setopt(handle, CURLOPT_COOKIEJAR, "cookies.txt");
 			curl_easy_setopt(handle, CURLOPT_COOKIEFILE, "cookies.txt");
-
-			//curl_easy_setopt(handle, CURLOPT_ENCODING, "");
-			//curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_data);
-			//curl_easy_setopt(handle, CURLOPT_WRITEDATA, fp);
-			//result = curl_easy_perform(handle);
-			//fclose(fp);
-
-			//if (result != CURLE_OK)
-			//{
-			//	 if errors have occurred, tell us what is wrong with result
-			//	fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(result));
-			//	return 1;
-			//}
 
 			curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_data2);
 			curl_easy_setopt(handle, CURLOPT_WRITEDATA, (void *)&data);
@@ -377,19 +314,7 @@ int RetrieveSPY(map<string, double>& SPYPriceList)
 		const char * cookies = sCookies.c_str();
 		curl_easy_setopt(handle, CURLOPT_COOKIE, cookies);   // Only needed for 1st stock
 		curl_easy_setopt(handle, CURLOPT_URL, cURL);
-		//fp = fopen(resultfilename, "ab");
-		//curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_data);
-		//curl_easy_setopt(handle, CURLOPT_WRITEDATA, fp);
-		//result = curl_easy_perform(handle);
-		//fclose(fp);
 
-		// Check for errors */
-		//if (result != CURLE_OK)
-		//{
-		//	// if errors have occurred, tell us what is wrong with 'result'
-		//	fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(result));
-		//	return 1;
-		//}
 		curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_data2);
 		curl_easy_setopt(handle, CURLOPT_WRITEDATA, (void *)&data);
 		result = curl_easy_perform(handle);
@@ -401,14 +326,6 @@ int RetrieveSPY(map<string, double>& SPYPriceList)
 			return 1;
 		}
 
-		//stringstream sData;
-		//sData.str(data.memory);
-		//string line;
-		//getline(sData, line);
-		//cout << line << endl;
-		//for (; getline(sData, line); )
-		//	cout << line << endl;
-
 		stringstream sData;
 		sData.str(data.memory);
 		string sValue, sDate;
@@ -418,6 +335,7 @@ int RetrieveSPY(map<string, double>& SPYPriceList)
 		//cout << itr->first << endl;
 		while (getline(sData, line)) {
 			sDate = line.substr(0, line.find_first_of(','));
+			sDate += "T16:00:00";
 			line.erase(line.find_last_of(','));
 			sValue = line.substr(line.find_last_of(',') + 1);
 			dValue = strtod(sValue.c_str(), NULL);
@@ -442,29 +360,3 @@ int RetrieveSPY(map<string, double>& SPYPriceList)
 
 	return 0;
 }
-
-//int main()
-//{
-//	map<string, Stock> a;
-//	ReadCsv("beat.csv", a);
-//	RetrieveFromYahoo(a);
-//	for (auto itr = a.begin(); itr != a.end(); itr++)
-//	{
-//		cout << itr->first << endl;
-//		vector<double> b = itr->second.GetPrice();
-//		//for (auto itr = b.begin(); itr != b.end(); itr++)
-//		//	cout << *itr << endl;
-//		cout << b.size() << endl;
-//	}
-//	auto itr = a.begin();
-//	for (int i=1; i<=2; i++)
-//	{
-//		cout << itr->first << endl;
-//		vector<double> b = itr->second.GetPrice();
-//		for (auto itr = b.begin(); itr != b.end(); itr++)
-//			cout << *itr << endl;
-//		cout << endl;
-//		itr++;
-//	}
-//	return 0;
-//}
