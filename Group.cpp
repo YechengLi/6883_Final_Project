@@ -11,12 +11,11 @@
 #include <cstdlib>
 
 
-vector<double> Group::CalACAAR(){
-    vector<double> result(120);
-    for(int i = 1; i<=30; i++){
-        result = (i/(i+1.0))*result + (1.0/(i+1.0))*CalCAAR();
+void Group::CalAvgCAAR(){
+	AvgCAAR.resize(120);
+    for(int i = 0; i<30; i++){
+		AvgCAAR = (i/(i+1.0))*AvgCAAR + (1.0/(i+1.0))*CalCAAR();
     }
-    return result;
 }
 
 
@@ -35,9 +34,8 @@ vector<double> Group::AAR(){
     for(int i = 1;i<=30;i++){
         double U = (rand()+1.0)/(RAND_MAX+1.0);
         int index = U*num;
-        result =  ((i-1)/i)*result + (1.0/i)*MyStock[tickerlist[index]].GetAR();
+        result =  ((i-1.0)/i)*result + (1.0/i)*MyStock[tickerlist[index]].GetAR();
                 
     }
-
     return result;
 }
