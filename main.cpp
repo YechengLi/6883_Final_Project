@@ -6,12 +6,12 @@
 //  Copyright © 2019年 Robot Wang. All rights reserved.
 //
 
-#include <iostream>
 #include "OpeOverLoading.hpp"
 #include "Group.hpp"
-#include <map>
 #include "Stock.hpp"
 #include "RetrieveData.hpp"
+#include <iostream>
+#include <map>
 #include <vector>
 using namespace std;
 
@@ -25,19 +25,63 @@ Group* GroupCalculation(vector<string>& TickerList, map<string, Stock>& Mystock,
     return GroupPtr;
 }
 
+//void plotResults(double xData[], vector<double> yData, vector<double> yData2, vector<double> yData3, int dataSize) {
+//	FILE *gnuplotPipe, *tempDataFile;
+//	const char *tempDataFileName;
+//	double x, y, x2, y2, x3, y3;
+//	int i;
+//	tempDataFileName = "tempData";
+//	gnuplotPipe = popen("/opt/local/bin/gnuplot", "w");
+//	if (gnuplotPipe) {
+//		fprintf(gnuplotPipe, "plot \"%s\" with lines\n", tempDataFileName);
+//		fflush(gnuplotPipe);
+//		tempDataFile = fopen(tempDataFileName, "w");
+//		for (i = 0; i < dataSize; i++) {
+//			x = xData[i];
+//			y = yData[i];
+//			cout << x << endl << y << endl;
+//			fprintf(tempDataFile, "%lf %lf\n", x, y);
+//		}
+//
+//		for (i = 0; i < dataSize; i++) {
+//			x2 = xData[i];
+//			y2 = yData2[i];
+//			cout << x2 << endl << y2 << endl;
+//			fprintf(tempDataFile, "%lf %lf\n", x2, y2);
+//		}
+//
+//		for (i = 0; i <= dataSize; i++) {
+//			x3 = xData[i];
+//			y3 = yData3[i];
+//			fprintf(tempDataFile, "%lf %lf\n", x3, y3);
+//		}
+//
+//		fclose(tempDataFile);
+//		printf("press enter to continue...");
+//		getchar();
+//		remove(tempDataFileName);
+//		fprintf(gnuplotPipe, "exit \n");
+//	}
+//	else {
+//		printf("gnuplot not found...");
+//	}
+//}
+
 int main()
 {
     vector<string> BeatList, MeetList, MissList;
     map<string, Stock> BeatMap, MeetMap, MissMap;
-    ReadCsv("beat.csv", BeatList, BeatMap);
-    ReadCsv("meet.csv", MeetList, MeetMap);
-    ReadCsv("miss.csv", MissList, MissMap);
+    ReadCsv("beat.csv", BeatList, BeatMap, Beat);
+    ReadCsv("meet.csv", MeetList, MeetMap, Meet);
+    ReadCsv("miss.csv", MissList, MissMap, Miss);
     RetrieveFromYahoo(BeatMap);
     RetrieveFromYahoo(MeetMap);
     RetrieveFromYahoo(MissMap);
     map<string, double> SPY;
     RetrieveSPY(SPY);
     map<string, double>* SPYptr = CalReturn(SPY);
+	//test Display()
+	BeatMap["AMZN"].Display();
     
     Group* BeatPtr = GroupCalculation(BeatList, BeatMap, SPYptr);
     Group* MeetPtr = GroupCalculation(MeetList, MeetMap, SPYptr);
@@ -75,6 +119,16 @@ int main()
     {
         cout << MissPtr->GetAvgCAAR()[i] << endl;
     }
+
+	//double Time[120];
+	//for (int i = 0; i < 120; i++) {
+	//	Time[i] = i + 1;
+	//}
+	//double* ptr = Time;
+	//vector<double> yData = BeatPtr->GetAvgCAAR();
+	//vector<double> yData2 = MeetPtr->GetAvgCAAR();
+	//vector<double> yData3 = MissPtr->GetAvgCAAR();
+	//plotResults(Time, yData, yData2, yData3, 120);
     
     
     

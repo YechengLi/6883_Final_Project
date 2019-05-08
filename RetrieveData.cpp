@@ -12,18 +12,27 @@
 #include "RetrieveData.hpp"
 using namespace std;
 
-void ReadCsv(string filename,vector<string>& tickerList, map<string, Stock>& tickerMap)
+void ReadCsv(string filename, vector<string>& tickerList, map<string, 
+	Stock>& tickerMap, GroupType group)
 {
 	ifstream fin(filename);
-	string line, ticker, StartDate, EndDate;
+	string line, ticker, DayZero, sActEPS, sEstEPS, sSurp, StartTime, EndTime;
 	while (getline(fin, line))
 	{
 		istringstream sin(line);
 		getline(sin, ticker, ',');
-		getline(sin, StartDate, ',');
-		getline(sin, EndDate, ',');
+		getline(sin, DayZero, ',');
+		getline(sin, sActEPS, ',');
+		getline(sin, sEstEPS, ',');
+		getline(sin, sSurp, ',');
+		getline(sin, StartTime, ',');
+		getline(sin, EndTime, ',');
+		double actEPS = strtod(sActEPS.c_str(), NULL);
+		double estEPS = strtod(sEstEPS.c_str(), NULL);
+		double surp = strtod(sSurp.c_str(), NULL);
 		tickerList.push_back(ticker);
-		tickerMap[ticker] = Stock(StartDate, EndDate);
+		tickerMap[ticker] = Stock(group, actEPS, estEPS, surp,
+			DayZero, StartTime, EndTime);
 	}
 }
 

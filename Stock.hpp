@@ -13,9 +13,16 @@
 #include <map>
 using namespace std;
 
+enum GroupType {Beat, Meet, Miss};
+
 class Stock{
 private:
+	GroupType group;
     vector<double> Price;
+	double actEPS; //actual EPS
+	double estEPS; //estimating EPS
+	double surp; //surprise
+	string DayZero; //releasing date
     string StartTime;
     string EndTime;
     vector<double> AR;
@@ -29,7 +36,9 @@ public:
 	string GetEndTime(void) const { return EndTime; }
 	vector<double> GetAR(void) const { return AR; }
     Stock() {}
-	Stock(string StartTime_, string EndTime_) :StartTime(StartTime_), EndTime(EndTime_) {}
+	Stock(GroupType group_, double actEPS_, double estEPS_, double surp_,
+		string DayZero_, string StartTime_, string EndTime_);
+	void Display() const;
     
     
 };
