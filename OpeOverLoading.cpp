@@ -1,11 +1,3 @@
-//
-//  OpeOverLoading.cpp
-//  Final Project
-//
-//  Created by apple on 2019/5/2.
-//  Copyright © 2019年 Robot Wang. All rights reserved.
-//
-
 #include "OpeOverLoading.hpp"
 #include <cmath>
 
@@ -34,4 +26,12 @@ vector<double> operator/(const vector<double>& V, const double& a)
     vector<double> U(d);
     for (int j=0; j<d; j++) U[j] = V[j]/a;
     return U;
+}
+
+ostream & operator<<(ostream & out, VectorD & V)
+{
+    for (VectorD::iterator itr= V.begin(); itr != V.end(); itr++)
+        out << *itr << "   ";
+    out << endl;
+    return out;
 }
