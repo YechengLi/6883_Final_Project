@@ -1,32 +1,20 @@
-//
-//  Group.cpp
-//  Final Project
-//
-//  Created by apple on 2019/5/2.
-//  Copyright © 2019年 Robot Wang. All rights reserved.
-//
-
 #include "Group.hpp"
 #include "OpeOverLoading.hpp"
 #include <cstdlib>
 
-
 void Group::CalAvgCAAR(){
-	AvgCAAR.resize(120);
-    for(int i = 0; i<30; i++){
-		AvgCAAR = (i/(i+1.0))*AvgCAAR + (1.0/(i+1.0))*CalCAAR();
+    vector<double> CAAR(120);
+    AvgCAAR.resize(120);
+    AvgAAR.resize(120);
+    for(int i = 1; i <= 30; i++)
+    {
+        vector<double> aar = AAR();
+        CAAR [0] = aar[0];
+        for(int i=1; i<120; i++)
+            CAAR[i] = CAAR[i-1] + aar[i];
+        AvgAAR = ((i-1.0)/i) * AvgAAR + (1.0/i) * aar;
+        AvgCAAR = ((i-1.0)/i) * AvgCAAR + (1.0/i) * CAAR;
     }
-}
-
-
-vector<double> Group::CalCAAR(){
-    vector<double> result(120);
-    vector<double> arr = AAR();
-    result [0] = arr [0];
-    for(int i=1; i<120 ; i++){
-        result[i] = result[i-1] + arr[i];
-    }
-    return result;
 }
 
 vector<double> Group::AAR(){
