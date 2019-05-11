@@ -110,12 +110,14 @@ int main()
                     string TickerName;
                     cout << "Please enter the stock's ticker: "; cin >> TickerName;
                     int x =0;
+                    //Check the tickername from which list(Beat, Meet, Miss) and show details/information for this stock. 
                     for (int i=0; i < BeatList.size(); i++)
                     { if(BeatList[i] == TickerName) {BeatMap[TickerName].Display(); x=1;}}
                     for (int i=0; i < MeetList.size(); i++)
                     { if(MeetList[i] == TickerName) {MeetMap[TickerName].Display(); x=1;}}
                     for (int i=0; i < MissList.size(); i++)
                     { if(MissList[i] == TickerName) {MissMap[TickerName].Display(); x=1;}}
+                    //If the tickername not in the all three list, then tell us and re-decide option.
                     if (x == 0) cout << "Your Ticker is not in S&P500" << endl;
                     cout << endl;
                     cout << "Do you want to look for other stock's information? (Y/N) "; cin >> temp;
