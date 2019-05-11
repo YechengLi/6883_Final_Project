@@ -30,7 +30,8 @@ void ReadCsv(string filename, vector<string>& tickerList, map<string,
         double actEPS = strtod(sActEPS.c_str(), NULL);
         double estEPS = strtod(sEstEPS.c_str(), NULL);
         double surp = strtod(sSurp.c_str(), NULL);
-        tickerList.push_back(ticker);
+        tickerList.push_back(ticker); // push the current ticker into the list
+        // create a new pair to save the information for this stock
         tickerMap[ticker] = Stock(group, actEPS, estEPS, surp,
                                   DayZero, StartTime, EndTime);
     }
@@ -79,8 +80,6 @@ string getTimeinSeconds(string Time)
     memset(time, 0, 100);
     if (ssTime >> std::get_time(&t, "%Y-%m-%dT%H:%M:%S"))
     {
-        //cout << std::put_time(&t, "%c %Z") << "\n"
-        //    << std::mktime(&t) << "\n";
         sprintf(time, "%lld", mktime(&t));
         return string(time);
     }
@@ -119,8 +118,6 @@ int RetrieveFromYahoo(map<string, Stock>& tickerMap)
         string sCookies, sCrumb;
         if (sCookies.length() == 0 || sCrumb.length() == 0)
         {
-            /*fp = fopen(outfilename, "w");*/
-            //curl_easy_setopt(handle, CURLOPT_URL, "https://finance.yahoo.com/quote/AMZN/history?p=AMZN");
             curl_easy_setopt(handle, CURLOPT_URL, "https://finance.yahoo.com/quote/AMZN/history");
             curl_easy_setopt(handle, CURLOPT_SSL_VERIFYPEER, 0);
             curl_easy_setopt(handle, CURLOPT_SSL_VERIFYHOST, 0);
@@ -169,10 +166,9 @@ int RetrieveFromYahoo(map<string, Stock>& tickerMap)
             if (itr == tickerMap.end())
                 break;
             
-            string StartTime_ = itr->second.GetStartTime();
-            //cout << itr->second.GetStartTime() << endl;
+            // get start and end time from the stock object
+            string StartTime_ = itr->second.GetStartTime(); 
             string EndTime_ = itr->second.GetEndTime();
-            //cout << itr->second.GetEndTime() << endl;
             string startTime = getTimeinSeconds(StartTime_);
             string endTime = getTimeinSeconds(EndTime_);
             
@@ -204,14 +200,14 @@ int RetrieveFromYahoo(map<string, Stock>& tickerMap)
             double dValue = 0;
             string line;
             getline(sData, line);
-            cout << itr->first << endl;
+            cout << itr->first << endl; // cout the ticker to show the process of retrieving data
             while (getline(sData, line)) {
-                //sDate = line.substr(0, line.find_first_of(','));
                 line.erase(line.find_last_of(','));
                 sValue = line.substr(line.find_last_of(',') + 1);
                 dValue = strtod(sValue.c_str(), NULL);
                 itr->second.SetPrice(dValue);
             }
+            // if the data retrieved from Yahoo is not correct, cout a string
             if (itr->second.GetPrice().size()!=121 || !itr->second.GetPrice()[0])
                 cout << "Error!!!!!!!!!!!!!!!!!!" << endl;
             itr++;
@@ -260,7 +256,6 @@ int RetrieveSPY(map<string, double>& SPYPriceList)
         string sCookies, sCrumb;
         if (sCookies.length() == 0 || sCrumb.length() == 0)
         {
-            //curl_easy_setopt(handle, CURLOPT_URL, "https://finance.yahoo.com/quote/AMZN/history?p=AMZN");
             curl_easy_setopt(handle, CURLOPT_URL, "https://finance.yahoo.com/quote/AMZN/history");
             curl_easy_setopt(handle, CURLOPT_SSL_VERIFYPEER, 0);
             curl_easy_setopt(handle, CURLOPT_SSL_VERIFYHOST, 0);
@@ -301,17 +296,12 @@ int RetrieveSPY(map<string, double>& SPYPriceList)
             sCookies = cCookies;
             
         }
-        //while (true)
-        //{
-        //    free(data.memory);
-        //    data.memory = NULL;
-        //    data.size = 0;
-        //    if (itr == tickerMap.end())
-        //        break;
+
         free(data.memory);
         data.memory = NULL;
         data.size = 0;
         
+        // 2-year time period to ensure it covers all stocks' 121-day price lists
         string StartTime_ = "2017-01-01T16:00:00";
         string EndTime_ = "2018-12-31T16:00:00";
         string startTime = getTimeinSeconds(StartTime_);
@@ -325,7 +315,7 @@ int RetrieveSPY(map<string, double>& SPYPriceList)
         string url = urlA + symbol + urlB + startTime + urlC + endTime + urlD + sCrumb;
         const char * cURL = url.c_str();
         const char * cookies = sCookies.c_str();
-        curl_easy_setopt(handle, CURLOPT_COOKIE, cookies);   // Only needed for 1st stock
+        curl_easy_setopt(handle, CURLOPT_COOKIE, cookies);
         curl_easy_setopt(handle, CURLOPT_URL, cURL);
         
         curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_data2);
@@ -345,17 +335,14 @@ int RetrieveSPY(map<string, double>& SPYPriceList)
         double dValue = 0;
         string line;
         getline(sData, line);
-        //cout << itr->first << endl;
         while (getline(sData, line)) {
             sDate = line.substr(0, line.find_first_of(','));
             sDate += "T16:00:00";
             line.erase(line.find_last_of(','));
             sValue = line.substr(line.find_last_of(',') + 1);
             dValue = strtod(sValue.c_str(), NULL);
-            SPYPriceList[sDate] = dValue;
+            SPYPriceList[sDate] = dValue; // save date and price for SPY in the map
         }
-        //    itr++;
-        //}
         free(data.memory);
         data.size = 0;
     }
