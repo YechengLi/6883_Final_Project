@@ -106,6 +106,10 @@ int main()
             }
                 
             case 2:{
+                if(BeatList.size()==0 || MeetList.size()==0 || MissList.size()==0)
+                {   cout << "WARNING: Option 1 need to be run first." << endl << endl << endl;
+                    break;}
+                
                 char temp;
                 do{
                     string TickerName;
@@ -128,6 +132,9 @@ int main()
             }
             
             case 3:{
+                 if(BeatList.size()==0 || MeetList.size()==0 || MissList.size()==0)
+                {   cout << "WARNING: Option 1 need to be run first." << endl << endl << endl;
+                    break;}
                 
                 BeatPtr = GroupCalculation(BeatList, BeatMap, SPYptr);
                 MeetPtr = GroupCalculation(MeetList, MeetMap, SPYptr);
@@ -162,6 +169,9 @@ int main()
                 
             }
             case 4:{
+                 if(BeatList.size()==0 || MeetList.size()==0 || MissList.size()==0)
+                {   cout << "WARNING: Option 1 need to be run first." << endl << endl << endl;
+                    break;}
             
                 BeatPtr = GroupCalculation(BeatList, BeatMap, SPYptr);
                 MeetPtr = GroupCalculation(MeetList, MeetMap, SPYptr);
