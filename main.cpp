@@ -27,26 +27,29 @@ void plotResults(double xData[], vector<double> yData, vector<double> yData2, ve
     int i;
     gnuplotPipe = popen("/opt/local/bin/gnuplot","w");
     if (gnuplotPipe) {
-        fprintf(gnuplotPipe,"plot \"%s\" with lines, \"%s\" with lines, \"%s\" with lines\n",tempDataFileName1, tempDataFileName2,tempDataFileName3);
+        fprintf(gnuplotPipe, "set xlabel 'Days'\n");
+        fprintf(gnuplotPipe, "set ylabel 'CAAR in percentage'\n");
+        fprintf(gnuplotPipe, "set title 'CAAR for 3 groups'\n");
+        fprintf(gnuplotPipe, "plot \"%s\" with lines, \"%s\" with lines, \"%s\" with lines\n",tempDataFileName1, tempDataFileName2,tempDataFileName3);
         fflush(gnuplotPipe);
         tempDataFile = fopen(tempDataFileName1,"w");
         for (i=0; i < dataSize; i++) {
             x = xData[i];
-            y = yData[i];
+            y = yData[i] * 100;
             fprintf(tempDataFile,"%lf %lf\n",x,y);
         }
         fclose(tempDataFile);
         tempDataFile = fopen(tempDataFileName2,"w");
         for (i=0; i < dataSize; i++) {
             x2 = xData[i];
-            y2 = yData2[i];
+            y2 = yData2[i] * 100;
             fprintf(tempDataFile,"%lf %lf\n",x2,y2);
         }
         fclose(tempDataFile);
         tempDataFile = fopen(tempDataFileName3,"w");
         for (i=0; i < dataSize; i++) {
             x3 = xData[i];
-            y3 = yData3[i];
+            y3 = yData3[i] * 100;
             fprintf(tempDataFile,"%lf %lf\n",x3,y3);
         }
         fclose(tempDataFile);
