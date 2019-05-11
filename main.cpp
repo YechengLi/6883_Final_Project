@@ -7,7 +7,7 @@
 #include <vector>
 using namespace std;
 
-
+// calculate abnormal return for one group of stocks, and create a group instance
 Group* GroupCalculation(vector<string>& TickerList, map<string, Stock>& Mystock, map<string, double>* SPYptr)
 {
     for (map<string, Stock>::iterator itr = Mystock.begin(); itr != Mystock.end(); itr++) {
@@ -17,6 +17,7 @@ Group* GroupCalculation(vector<string>& TickerList, map<string, Stock>& Mystock,
     GroupPtr->CalAvgCAAR();
     return GroupPtr;
 }
+
 void plotResults(double xData[], vector<double> yData, vector<double> yData2, vector<double> yData3, int dataSize) {
     FILE *gnuplotPipe,*tempDataFile;
     const char *tempDataFileName1 = "Group Beat";
